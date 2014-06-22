@@ -1,0 +1,10 @@
+Options Indexes FollowSymLinks
+
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f 
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^([a-z0-9_-]+)$ ?page=$1 [NC,L]
+RewriteRule ^([a-z0-9_-]+)/$ ?page=$1 [NC,L]
