@@ -1,0 +1,39 @@
+<div class="row">
+	<div class="col-xs-12">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Nome de Usuário</th>
+					<th>Nome Completo</th>
+					<th>E-mail</th>
+					<th>Data de Nascimento</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->entries as $entry): ?>
+					<tr>
+						<td><?= $entry->NOMEUSUARIO ?></td>
+						<td><?= $entry->NOMECOMPLETO ?></td>
+						<td><?= $entry->EMAIL ?></td>
+						<td><?= $entry->DATANASC ?></td>
+						<td>
+							<a class="btn btn-default" href="<?= $this->url('usuario', 'edit', ['nomeusuario' => $entry->NOMEUSUARIO]) ?>">
+								Editar
+							</a>
+							<a class="btn btn-danger" href="<?= $this->url('usuario', 'delete', ['nomeusuario' => $entry->NOMEUSUARIO]) ?>">
+								Excluir
+							</a>
+						</td>
+					</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<a class="btn btn-primary" href="<?= $this->url('usuario', 'add') ?>">Adicionar</a>
+	</div>
+</div>

@@ -6,6 +6,6 @@ return
 	'host' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-	'dbname' => 'university-db-project3',
+	'dbname' => 'BD_T3',
 
 ];

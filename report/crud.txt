@@ -1,8 +1,8 @@
 (C)reate (R)etrieve (U)pdate (D)elete
 -- nao precisa
 
-usuario: C
-video: CRUD
+	usuario: C
+	video: CRUD
 serie: CRUD
 video_premiacao: CR
 avaliacao: C
