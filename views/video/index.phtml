@@ -1,0 +1,33 @@
+<div class="row">
+	<div class="col-xs-12">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Título</th>
+					<th>Gênero</th>
+					<th>Ano de Lançamento</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->entries as $entry): ?>
+					<tr>
+						<td><?= $entry->ID ?></td>
+						<td><?= $entry->TITULOORIGINAL ?></td>
+						<td><?= $entry->GENERO ?></td>
+						<td><?= $entry->ANOLANCAMENTO ?></td>
+						<td>
+							<a class="btn btn-default" href="<?= $this->url('video', 'edit', ['id' => $entry->ID]) ?>">
+								Editar
+							</a>
+							<a class="btn btn-danger" href="<?= $this->url('video', 'delete', ['id' => $entry->ID]) ?>">
+								Excluir
+							</a>
+						</td>
+					</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
+</div>

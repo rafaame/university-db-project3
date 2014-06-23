@@ -1,7 +1,11 @@
 <?php
 
+require 'SingletonTrait.php';
+
 class Database
 {
+
+	use SingletonTrait;
 
 	private $_pdo;
 
@@ -23,7 +27,7 @@ class Database
 	public function __construct()
 	{
 
-		$config = require 'config.php';
+		$config = require 'common/config.php';
 		$host = $config['host'];
 		$username = $config['username'];
 		$password = $config['password'];
@@ -51,12 +55,12 @@ class Database
 
 	}
 
-	public function getData()
+	public function fetch($query)
 	{
 
-		$stmt = $this->query('SELECT * FROM USUARIO');
+		$stmt = $this->query($query);
 
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $stmt->fetchAll(PDO::FETCH_OBJ);
 
 	}
 

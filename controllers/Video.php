@@ -3,10 +3,19 @@
 class Controller_Video
 {
 
-	public function test()
+	public function index()
 	{
 
-		var_dump('lol');
+		$db = Database::getInstance();
+
+		$entries = $db->fetch('SELECT * FROM VIDEO');
+
+		return
+		[
+
+			'entries' => $entries,
+
+		];
 
 	}
 

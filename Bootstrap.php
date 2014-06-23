@@ -1,12 +1,16 @@
 <?php
 
+require 'ViewRenderer.php';
+
 class Bootstrap
 {
 
 	private function initDatabase()
 	{
 
-		require 'common/Database.php';
+		require 'Database.php';
+
+		Database::getInstance();
 
 	}
 
@@ -34,9 +38,13 @@ class Bootstrap
 		$actionName = $route['action'];
 
 		require 'controllers/' . ucfirst($controllerName) . '.php';
-
 		$controller = new $controllerClass();
-		$controller->$actionName();
+		
+		$viewParams = $controller->$actionName();
+		$viewFilename = 'views/' . $controllerName . '/' . $actionName . '.phtml';
+
+		$viewRenderer = new ViewRenderer($viewParams);
+		$viewRenderer->render($viewFilename, 'views/layout/standard.phtml');
 
 	}
 
