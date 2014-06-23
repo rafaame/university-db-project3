@@ -114,7 +114,7 @@ class Controller_Usuario
 
 		$nomeusuario = $_GET['nomeusuario'];
 
-		$success = $db->executeStmt('DELETE FROM USUARIO WHERE NOMEUSUARIO = :nomeusuario', ['nomeusuario' => $nomeusuario]);
+		$success = $db->executeStmt('UPDATE FROM USUARIO SET STATUS = \'x\' WHERE NOMEUSUARIO = :nomeusuario', ['nomeusuario' => $nomeusuario]);
 
 		return [];
 
