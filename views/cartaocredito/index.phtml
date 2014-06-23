@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-xs-12">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Número</th>
+					<th>Empresa</th>
+					<th>Nome Completo</th>
+					<th>Validade</th>
+					<th>Usuário</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->entries as $entry): ?>
+					<tr>
+						<td><?= $entry->NUMERO ?></td>
+						<td><?= $entry->EMPRESA ?></td>
+						<td><?= $entry->NOME ?></td>
+						<td><?= $entry->VALIDADE ?></td>
+						<td><?= $entry->USUARIO ?></td>
+						<td>
+							<a class="btn btn-default" href="<?= $this->url('cartaocredito', 'edit', ['numero' => $entry->NUMERO]) ?>">
+								Editar
+							</a>
+							<a class="btn btn-danger" href="<?= $this->url('cartaocredito', 'delete', ['numero' => $entry->NUMERO]) ?>">
+								Excluir
+							</a>
+						</td>
+					</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
+		<a class="btn btn-primary" href="<?= $this->url('cartaocredito', 'add') ?>">Adicionar</a>
+	</div>
+</div>
