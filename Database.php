@@ -55,12 +55,43 @@ class Database
 
 	}
 
-	public function fetch($query)
+	public function fetch($query, $data = [], $reduce = true)
 	{
 
-		$stmt = $this->query($query);
+		$preparedData = [];
+		foreach($data as $key => $value)
+			$preparedData[':' . $key] = $value;
 
-		return $stmt->fetchAll(PDO::FETCH_OBJ);
+		$stmt = $this->_pdo->prepare($query);
+
+		if(!$stmt->execute($preparedData))
+			return false;
+
+		$entries = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+		if(!$reduce)
+			return $entries;
+
+		if(count($entries) == 1)
+			return $entries[0];
+		else
+			return $entries;
+
+	}
+
+	public function executeStmt($query, $data)
+	{
+
+		$preparedData = [];
+		foreach($data as $key => $value)
+			$preparedData[':' . $key] = $value;
+
+		$stmt = $this->_pdo->prepare($query);
+
+		if(!$stmt->execute($preparedData))
+			return false;
+
+		return $stmt->rowCount();
 
 	}
 
