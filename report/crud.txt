@@ -1,0 +1,21 @@
+(C)reate (R)etrieve (U)pdate (D)elete
+-- nao precisa
+
+usuario: C
+video: CRUD
+serie: CRUD
+video_premiacao: CR
+avaliacao: C
+contato: C
+chat: --
+artista: CR
+artista_tipo: CR
+video_artista: CR
+post: C
+compartilhamento: --
+cartaocredito: C
+compra: CRUD
+compra_video: CRUD
+lista: C
+lista_video: C
+assistido: --
