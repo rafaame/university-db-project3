@@ -1,20 +1,32 @@
 -- MySQL das tabelas
 
+-- Character : utf8
+-- Collate   : utf8_general_ci (character encoding com suporte a acentuação)
+-- Engine    : InnoDB (suporta modelo ACID, com transações, commit, rollback e recuperação de falhas)
+
+-- Criação do banco de dados com escolha do encoding de caracteres
+CREATE DATABASE BD_T3 DEFAULT CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+
+-- Seleciona o banco a ser usado
+USE BD_T3;
+
 -- Tabela Usuario
 CREATE TABLE USUARIO(
 	NOMEUSUARIO  VARCHAR(20) NOT NULL,
 	SENHA        VARCHAR(40) NOT NULL,
 	NOMECOMPLETO VARCHAR(40) NOT NULL,
-	DATANASC     DATE        NOT NULL,
+	DATANASC     DATE        NOT NULL, -- formato 'yyyy-mm-dd'
 	EMAIL        VARCHAR(40) NOT NULL,
-	EXCLUIDO     CHAR(1)     DEFAULT 'n', -- marca se o usuario foi excluído do sistema
+	STATUS       CHAR(1)     DEFAULT 'a', -- a: ativo, x: excluído, b: bloqueado. Esse campo foi adicionado posteriormente pois decidiu-se não excluir definitivamente as tuplas dos usuários.
 
-	PRIMARY KEY(NOMEUSUARIO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci; -- character enconding com suporte a acentuação e sinais gráficos
+	PRIMARY KEY(NOMEUSUARIO),
+
+	CHECK(STATUS IN ('a', 'x', 'b')) -- Check para garantir a integridade nesse campo que funciona como uma flag
+) ENGINE=InnoDB;
 
 -- Tabela Video
 CREATE TABLE VIDEO(
-	ID             INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+	ID             INT UNSIGNED  NOT NULL AUTO_INCREMENT, -- o tipo de dado int unsigned foi escolhido para suportar uma grande quantidade de ids. auto_increment automaticamente incrementa a id da ultima tupla e utiliza na insercao da seguinte
 	TITULOORIGINAL VARCHAR(60)   NOT NULL,
 	ANOLANCAMENTO  SMALLINT      NOT NULL,
 	DISTRIBUIDORA  VARCHAR(40)   NOT NULL,
@@ -34,19 +46,21 @@ CREATE TABLE VIDEO(
 	TIPO           CHAR(1)       NOT NULL, -- 'f' filme, 's' série
 
 	PRIMARY KEY(ID),
-	UNIQUE(TITULOORIGINAL, ANOLANCAMENTO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	UNIQUE(TITULOORIGINAL, ANOLANCAMENTO),
+
+	CHECK(TIPO IN ('f', 's'))
+) ENGINE=InnoDB;
 
 -- Tabela Serie
 CREATE TABLE SERIE(
 	NOMEEPISODIO VARCHAR(40)  NOT NULL,
-	NUMEPISODIO  TINYINT      NOT NULL,
-	TEMPORADA    TINYINT      NOT NULL,
+	NUMEPISODIO  TINYINT      NOT NULL, -- inteiro muito pequeno para armazenar os numeros de episodios
+	TEMPORADA    TINYINT      NOT NULL, -- inteiro muito pequeno para armazenar as temporadas
 	VIDEO        INT UNSIGNED NOT NULL,
 
-	PRIMARY KEY(NOMEEPISODIO, NUMEPISODIO, TEMPORADA), -- FIXME corrigir no modelo relacional
+	PRIMARY KEY(NOMEEPISODIO, NUMEPISODIO, TEMPORADA),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Video_Premiacao
 CREATE TABLE VIDEO_PREMIACAO(
@@ -55,32 +69,34 @@ CREATE TABLE VIDEO_PREMIACAO(
 
 	PRIMARY KEY(VIDEO, PREMIACAO),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Avaliacao
 CREATE TABLE AVALIACAO(
 	USUARIO VARCHAR(20)  NOT NULL,
 	VIDEO   INT UNSIGNED NOT NULL,
-	REVIEW  TEXT,
+	REVIEW  TEXT, -- campo que permite longas strings de texto
 	NOTA    DECIMAL(2,1) NOT NULL,
 
 	PRIMARY KEY(USUARIO, VIDEO),
 	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Contato
+-- Ao ser inserido um contato de A com B a aplicação se encarrega de criar o contato contrário (B com A)
 CREATE TABLE CONTATO(
 	USUARIOA VARCHAR(20) NOT NULL,
 	USUARIOB VARCHAR(20) NOT NULL,
-	DATAHORA DATETIME    NOT NULL,
+	DATAHORA DATETIME    NOT NULL, -- formato 'yyyy-mm-dd hh:mm:ss'
 
 	PRIMARY KEY(USUARIOA, USUARIOB),
 	FOREIGN KEY(USUARIOA) REFERENCES USUARIO(NOMEUSUARIO),
 	FOREIGN KEY(USUARIOB) REFERENCES USUARIO(NOMEUSUARIO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Chat
+-- Tabela que guarda as mensagens do usuario A para B
 CREATE TABLE CHAT(
 	USUARIOA  VARCHAR(20) NOT NULL,
 	USUARIOB  VARCHAR(20) NOT NULL,
@@ -90,7 +106,7 @@ CREATE TABLE CHAT(
 
 	PRIMARY KEY(USUARIOA, USUARIOB, DATAHORA),
 	FOREIGN KEY(USUARIOA, USUARIOB) REFERENCES CONTATO(USUARIOA, USUARIOB)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Artista
 CREATE TABLE ARTISTA(
@@ -98,7 +114,7 @@ CREATE TABLE ARTISTA(
 	NOME          VARCHAR(40),
 
 	PRIMARY KEY(NOMEARTISTICO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Artista_Tipo
 CREATE TABLE ARTISTA_TIPO(
@@ -107,7 +123,7 @@ CREATE TABLE ARTISTA_TIPO(
 
 	PRIMARY KEY(ARTISTA, TIPO),
 	FOREIGN KEY(ARTISTA) REFERENCES ARTISTA(NOMEARTISTICO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Video_Artista
 CREATE TABLE VIDEO_ARTISTA(
@@ -118,7 +134,7 @@ CREATE TABLE VIDEO_ARTISTA(
 	PRIMARY KEY(VIDEO, ARTISTA, TIPO),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID),
 	FOREIGN KEY(ARTISTA, TIPO) REFERENCES ARTISTA_TIPO(ARTISTA, TIPO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Post
 CREATE TABLE POST(
@@ -127,16 +143,19 @@ CREATE TABLE POST(
 	USUARIO           VARCHAR(20)  NOT NULL,
 	TITULO            VARCHAR(40)  NOT NULL,
 	CATEGORIA         VARCHAR(40),
-	PUBLICO           CHAR(1)      DEFAULT 'n', -- marca se o post por ser visto por outros usuários
+	PUBLICO           CHAR(1)      DEFAULT 'n', -- marca se o post por ser visto por outros usuários 'n' - nao e 'y' - sim
 	CONTEUDO          TEXT         NOT NULL,
-	COMPARTILHAMENTOS INT UNSIGNED DEFAULT 0,
+	COMPARTILHAMENTOS INT UNSIGNED DEFAULT 0, -- quando se cria um post, ele não tem nenhum compartilhamento
 
 	PRIMARY KEY(ID),
 	UNIQUE(DATAHORA, USUARIO),
-	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+
+	CHECK(PUBLICO IN ('n', 'y'))
+) ENGINE=InnoDB;
 
 -- Tabela Compartilhamentos
+-- Quando um usuario faz um compartilhamento de um post a aplicação encarrega-se de incrementar o numero de compartilhamentos do respectivo post
 CREATE TABLE COMPARTILHAMENTO(
 	USUARIO  VARCHAR(20)  NOT NULL,
 	POST     INT UNSIGNED NOT NULL,
@@ -145,7 +164,7 @@ CREATE TABLE COMPARTILHAMENTO(
 	PRIMARY KEY(USUARIO, POST),
 	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
 	FOREIGN KEY(POST) REFERENCES POST(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela CartaoCredito
 CREATE TABLE CARTAOCREDITO(
@@ -158,7 +177,7 @@ CREATE TABLE CARTAOCREDITO(
 	PRIMARY KEY(NUMERO, EMPRESA),
 	UNIQUE(USUARIO),
 	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Compra
 CREATE TABLE COMPRA(
@@ -171,7 +190,7 @@ CREATE TABLE COMPRA(
 
 	PRIMARY KEY(NF),
 	FOREIGN KEY(CARTAONUMERO, CARTAOEMPRESA) REFERENCES CARTAOCREDITO(NUMERO, EMPRESA)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Compra_Video
 CREATE TABLE COMPRA_VIDEO(
@@ -181,21 +200,23 @@ CREATE TABLE COMPRA_VIDEO(
 	PRIMARY KEY(NF, VIDEO),
 	FOREIGN KEY(NF) REFERENCES COMPRA(NF),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Lista
 CREATE TABLE LISTA(
 	ID       INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	DATAHORA DATETIME     NOT NULL,
 	USUARIO  VARCHAR(20)  NOT NULL,
-	TIPO     CHAR(1)      DEFAULT 'P', -- 'p' playlist, 'w' wishlist
+	TIPO     CHAR(1)      DEFAULT 'p', -- 'p' playlist, 'w' wishlist
 	NOME     VARCHAR(40),
-	PUBLICO  CHAR(1)      DEFAULT 'n', -- marca se a lista pode ser vista por outros usuários
+	PUBLICO  CHAR(1)      DEFAULT 'n', -- marca se a lista pode ser vista por outros usuários 'n' - nao e 'y' sim
 
 	PRIMARY KEY(ID),
 	UNIQUE(DATAHORA, USUARIO),
-	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
+	CHECK(TIPO IN ('p', 'w')),
+	CHECK(PUBLICO IN ('n', 'y'))
+) ENGINE=InnoDB;
 
 -- Tabela Lista_Video
 CREATE TABLE LISTA_VIDEO(
@@ -205,7 +226,7 @@ CREATE TABLE LISTA_VIDEO(
 	PRIMARY KEY(LISTA, VIDEO),
 	FOREIGN KEY(LISTA) REFERENCES LISTA(ID),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 -- Tabela Assistido
 CREATE TABLE ASSISTIDO(
@@ -217,15 +238,15 @@ CREATE TABLE ASSISTIDO(
 	PRIMARY KEY(USUARIO, VIDEO, DATAHORA),
 	FOREIGN KEY(USUARIO) REFERENCES USUARIO(NOMEUSUARIO),
 	FOREIGN KEY(VIDEO) REFERENCES VIDEO(ID)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB;
 
 COMMIT;
 
 -- Inserção de tuplas iniciais nas tabelas
 
-INSERT INTO USUARIO(NOMEUSUARIO, SENHA, NOMECOMPLETO, DATANASC, EMAIL, EXCLUIDO) VALUES
-('joao', 'nohash0', 'João da Silva', '1993-06-10', 'joao@example.com', 'N'),
-('maria', 'nohash1', 'Maria da Selva', '1991-07-01', 'selva@example.com', 'N');
+INSERT INTO USUARIO(NOMEUSUARIO, SENHA, NOMECOMPLETO, DATANASC, EMAIL, STATUS) VALUES
+('joao',  'nohash0', 'João da Silva',  '1993-06-10', 'joao@example.com',  DEFAULT),
+('maria', 'nohash1', 'Maria da Selva', '1991-07-01', 'selva@example.com', DEFAULT);
 COMMIT;
 
 INSERT INTO VIDEO(ID, TITULOORIGINAL, ANOLANCAMENTO, DISTRIBUIDORA, LICENCA, TITULOPT, GENERO, CLASSEETARIA, DURACAO, TAMANHO, AVALIACAO, SINOPSE, TRAILER, RESOLUCAO, AUDIO, LEGENDA, PRECO, TIPO) VALUES
@@ -316,12 +337,9 @@ INSERT INTO ASSISTIDO(USUARIO, VIDEO, DATAHORA, PERIODO) VALUES
 ('maria', 2, '2014-06-04 05:30:00', 'integral');
 COMMIT;
 
-
-
-
 /*
--- Ordem para dar drop em tudo
-
+-- Ordem correta para dar drop em tudo e eliminar a base de dados
+-- Não faz parte do script de criação, somente para debug interno
 DROP TABLE ASSISTIDO;
 DROP TABLE LISTA_VIDEO;
 DROP TABLE LISTA;
@@ -341,4 +359,3 @@ DROP TABLE SERIE;
 DROP TABLE VIDEO;
 DROP TABLE USUARIO;
 */
-
