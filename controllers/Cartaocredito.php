@@ -25,6 +25,8 @@ class Controller_Cartaocredito
 
 		$success = false;
 
+		$users = $db->fetch('SELECT NOMEUSUARIO, NOMECOMPLETO FROM USUARIO');
+
 		if(count($_POST) > 0)
 		{
 
@@ -51,6 +53,7 @@ class Controller_Cartaocredito
 
 			'formFields' => $formFields,
 			'success' => $success,
+			'users' => $users,
 
 		];
 
@@ -74,6 +77,7 @@ class Controller_Cartaocredito
 		$success = false;
 
 		$entry = $db->fetch('SELECT * FROM CARTAOCREDITO WHERE NUMERO = :numero', ['numero' => $numero]);
+		$users = $db->fetch('SELECT NOMEUSUARIO, NOMECOMPLETO FROM USUARIO');
 
 		if(count($_POST) > 0)
 		{
@@ -98,6 +102,7 @@ class Controller_Cartaocredito
 			'formFields' => $formFields,
 			'success' => $success,
 			'entry' => $entry,
+			'users' => $users,
 
 		];
 

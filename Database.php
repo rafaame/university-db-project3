@@ -8,6 +8,7 @@ class Database
 	use SingletonTrait;
 
 	private $_pdo;
+	private $lastStmt;
 
 	private function connect($host, $username, $password, $dbname)
 	{
@@ -64,6 +65,9 @@ class Database
 
 		$stmt = $this->_pdo->prepare($query);
 
+		if($stmt)
+			$this->lastStmt = $stmt;
+
 		if(!$stmt->execute($preparedData))
 			return false;
 
@@ -86,12 +90,33 @@ class Database
 		foreach($data as $key => $value)
 			$preparedData[':' . $key] = $value;
 
-		$stmt = $this->_pdo->prepare($query);
+		try
+		{
 
-		if(!$stmt->execute($preparedData))
-			return false;
+			$stmt = $this->_pdo->prepare($query);
+
+			if($stmt)
+				$this->lastStmt = $stmt;
+
+			if(!$stmt->execute($preparedData))
+				return false;
+
+		}
+		catch(PDOException $e)
+		{
+
+			throw $e;
+
+		}
 
 		return $stmt->rowCount();
+
+	}
+
+	public function getErrorInfo()
+	{
+
+		return array_merge($this->_pdo->errorInfo(), $this->lastStmt->errorInfo());
 
 	}
 

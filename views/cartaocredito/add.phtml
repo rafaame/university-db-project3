@@ -5,7 +5,15 @@
 				<div class="form-group">
 					<label for="<?= $name ?>" class="col-sm-2 control-label"><?= $label ?></label>
 					<div class="col-sm-10">
+					<?php if($name == 'USUARIO'): ?>
+						<select class="form-control" name="<?= $name ?>">
+							<?php foreach($this->users as $user): ?>
+								<option value="<?= $user->NOMEUSUARIO ?>"><?= $user->NOMECOMPLETO ?></option>
+							<?php endforeach ?>
+						</select>
+					<?php else: ?>
 						<input type="text" class="form-control" name="<?= $name ?>"/>
+					<?php endif ?>
 					</div>
 				</div>
 			<?php endforeach ?>
