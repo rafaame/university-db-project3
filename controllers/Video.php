@@ -154,4 +154,44 @@ class Controller_Video
 
 	}
 
+	public function searchByTitle()
+	{
+
+		$db = Database::getInstance();
+
+		$title = $_GET['title'];
+
+		$entry = $db->fetch('SELECT * FROM VIDEO WHERE TITULOORIGINAL = :title', ['title' => $title], false);
+
+		return
+		[
+
+			'entries' => $entry,
+
+			'_render' => 'index',
+
+		];
+
+	}
+
+	public function searchByReleaseYear()
+	{
+
+		$db = Database::getInstance();
+
+		$year = $_GET['year'];
+
+		$entry = $db->fetch('SELECT * FROM VIDEO WHERE ANOLANCAMENTO = :year', ['year' => $year], false);
+
+		return
+		[
+
+			'entries' => $entry,
+
+			'_render' => 'index',
+
+		];
+
+	}
+
 }

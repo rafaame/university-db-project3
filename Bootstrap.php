@@ -41,7 +41,11 @@ class Bootstrap
 		$controller = new $controllerClass();
 		
 		$viewParams = $controller->$actionName();
-		$viewFilename = 'views/' . $controllerName . '/' . $actionName . '.phtml';
+
+		if($viewParams['_render'])
+			$viewFilename = 'views/' . $controllerName . '/' . $viewParams['_render'] . '.phtml';
+		else
+			$viewFilename = 'views/' . $controllerName . '/' . $actionName . '.phtml';
 
 		$viewRenderer = new ViewRenderer($viewParams);
 		$viewRenderer->render($viewFilename, 'views/layout/standard.phtml');
