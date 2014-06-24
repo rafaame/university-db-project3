@@ -1,0 +1,39 @@
+<div class="row">
+	<div class="col-xs-12">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Título do Episódio</th>
+					<th>Número do Episódio</th>
+					<th>Temporada</th>
+					<th>Título da Série</th>
+					<!-- <th>Ações</th> -->
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->entries as $entry): ?>
+					<tr>
+						<td><?= $entry->NOMEEPISODIO ?></td>
+						<td><?= $entry->NUMEPISODIO ?></td>
+						<td><?= $entry->TEMPORADA ?></td>
+						<td><?= $entry->TITULOORIGINAL ?></td>
+						<!-- <td>
+							<a class="btn btn-default" href="<?= $this->url('serie', 'edit', ['id' => $entry->ID]) ?>">
+								Editar
+							</a>
+							<a class="btn btn-danger" href="<?= $this->url('serie', 'delete', ['id' => $entry->ID]) ?>">
+								Excluir
+							</a>
+						</td> -->
+					</tr>
+				<?php endforeach ?>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- <div class="row">
+	<div class="col-xs-12">
+		<a class="btn btn-primary" href="<?= $this->url('serie', 'add') ?>">Adicionar</a>
+	</div>
+</div> -->
