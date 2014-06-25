@@ -42,7 +42,7 @@ class Bootstrap
 		
 		$viewParams = $controller->$actionName();
 
-		if($viewParams['_render'])
+		if(isset($viewParams['_render']))
 			$viewFilename = 'views/' . $controllerName . '/' . $viewParams['_render'] . '.phtml';
 		else
 			$viewFilename = 'views/' . $controllerName . '/' . $actionName . '.phtml';
